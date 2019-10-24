@@ -8,7 +8,7 @@ OBJ= $(SRC:.c=.o)
 
 all: $(EXEC)
 
-jeu: $(OBJ)
+mario: $(OBJ)
 	@$(CC) -o $@ $^ $(LDFLAGS)
 
 main.o: jeu.h constantes.h
