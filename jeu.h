@@ -1,8 +1,11 @@
-/*
-jeu.h
-------------
+#ifndef __JEU__H__
+#define __JEU__H__
 
-Par khaled Sadegh, 
+#include "declaration.h"
 
-Rôle : protoype des fonctions de jeu.c
-*/
+#define WINDOW_WIDTH 408
+#define WINDOW_HEIGHT 408
+
+void clean_resources(SDL_Window *w, SDL_Renderer *r);
+
+#endif

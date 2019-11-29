@@ -11,7 +11,7 @@ all: $(EXEC)
 mario: $(OBJ)
 	@$(CC) -o $@ $^ $(LDFLAGS)
 
-main.o: jeu.h constantes.h
+jeu.o: jeu.h declaration.h
 
 %.o: %.c
 	@$(CC) -o $@ -c $< $(CFLAGS)
