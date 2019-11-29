@@ -1,5 +1,15 @@
 #include "declaration.h"
 
+/*
+    MARIO
+*/
+
+Mario *new_joueur()
+{
+    Mario *mario = malloc(sizeof(*mario));
+    return mario;
+}
+
 int load_image_mario(SDL_Renderer *renderer, Mario *mario)
 {
     SDL_Surface *picture = NULL;
@@ -66,8 +76,78 @@ void destroy_mario(Mario *mario)
     mario = NULL;
 }
 
-Mario *new_joueur()
+/*
+    OBJETS
+*/
+
+Objets *new_Objets()
 {
-    Mario *mario = malloc(sizeof(*mario));
-    return mario;
+    Objets *objets = malloc(sizeof(*objets));
+    return objets;
+}
+
+int load_image_objets(SDL_Renderer *renderer, Objets *objets)
+{
+    SDL_Surface *picture = NULL;
+    int error = 0;
+
+    //OBJET MUR
+    picture = IMG_Load("src/assets/image_pack1/mur.png");
+    if (picture == NULL)
+    {
+        SDL_Log("ERREUR > %s\n", SDL_GetError());
+        error--;
+    }
+    objets->mur = SDL_CreateTextureFromSurface(renderer, picture);
+    SDL_FreeSurface(picture);
+
+    //OBJET CAISSE
+    picture = IMG_Load("src/assets/image_pack1/caisse.png");
+    if (picture == NULL)
+    {
+        SDL_Log("ERREUR > %s\n", SDL_GetError());
+        error--;
+    }
+    objets->caisse = SDL_CreateTextureFromSurface(renderer, picture);
+    SDL_FreeSurface(picture);
+
+    //OBJET CAISSE OK
+    picture = IMG_Load("src/assets/image_pack1/caisse_ok.png");
+    if (picture == NULL)
+    {
+        SDL_Log("ERREUR > %s\n", SDL_GetError());
+        error--;
+    }
+    objets->caisse_ok = SDL_CreateTextureFromSurface(renderer, picture);
+    SDL_FreeSurface(picture);
+
+    //OBJECT OBJECTIF
+    picture = IMG_Load("src/assets/image_pack1/objectif.png");
+    if (picture == NULL)
+    {
+        SDL_Log("ERREUR > %s\n", SDL_GetError());
+        error--;
+    }
+    objets->objectif = SDL_CreateTextureFromSurface(renderer, picture);
+    SDL_FreeSurface(picture);
+
+    return error;
+}
+
+void destroy_objets(Objets *objets)
+{
+    if (objets->mur != NULL)
+        SDL_DestroyTexture(objets->mur);
+
+    if (objets->caisse != NULL)
+        SDL_DestroyTexture(objets->caisse);
+
+    if (objets->caisse_ok != NULL)
+        SDL_DestroyTexture(objets->caisse_ok);
+
+    if (objets->objectif != NULL)
+        SDL_DestroyTexture(objets->objectif);
+
+    free(objets);
+    objets = NULL;
 }

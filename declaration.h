@@ -8,6 +8,7 @@
 
 #define TAILLE_BLOC 34
 
+//STRUCTURE MARIO
 typedef struct Mario
 {
     SDL_Texture *haut;
@@ -17,17 +18,36 @@ typedef struct Mario
 
 } Mario;
 
-typedef struct Object
+//STRUCTURE OBJECTS
+typedef struct Objets
 {
-    SDL_Texture *haut;
-    SDL_Texture *bas;
-    SDL_Texture *gauche;
-    SDL_Texture *droit;
+    SDL_Texture *mur;
+    SDL_Texture *caisse_ok;
+    SDL_Texture *caisse;
+    SDL_Texture *objectif;
 
-} Object;
+} Objets;
 
+/*
+  ****CREATION DU MODEL****
+*/
+
+//Mario
 Mario *new_joueur();
+
+//Objets
+Objets *new_Objets();
+
+/*
+  ****FONCTION DE MANIPULATION DU MODEL****
+*/
+
+//Mario
 int load_image_mario(SDL_Renderer *renderer, Mario *mario);
 void destroy_mario(Mario *mario);
+
+//Objets
+int load_image_objets(SDL_Renderer *renderer, Objets *objets);
+void destroy_objets(Objets *objets);
 
 #endif

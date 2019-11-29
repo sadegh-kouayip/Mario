@@ -3,8 +3,8 @@
 
 #include "declaration.h"
 
-#define WINDOW_WIDTH 408
-#define WINDOW_HEIGHT 408
+#define NB_BLOCS_LARGEUR 12
+#define NB_BLOCS_HAUTEUR 12
 
 void clean_resources(SDL_Window *w, SDL_Renderer *r);
 

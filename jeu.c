@@ -10,13 +10,25 @@ int main(int argc, char **argv)
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Texture *mario_actuel = NULL;
-    SDL_Rect position = {0, 0, TAILLE_BLOC, TAILLE_BLOC};
+    SDL_Rect position_mario = {0, 0, TAILLE_BLOC, TAILLE_BLOC}, position_objects = {0, 0, TAILLE_BLOC, TAILLE_BLOC};;
+
+    //CARTE DE REPERE DU JEU
+    unsigned int map[NB_BLOCS_LARGEUR][NB_BLOCS_HAUTEUR] = {0};
 
     //PACKAGE MARIO
     Mario *mario = new_joueur();
     if (mario == NULL)
     {
-        printf("Probleme d'alocation memoire");
+        printf("Probleme d'allocation memoire");
+        exit(EXIT_FAILURE);
+    }
+
+    //PACKAGE OBJECTS
+    Objets *objets = new_Objets();
+    if (objets == NULL)
+    {
+        printf("Probleme d'allocation memoire");
+        destroy_mario(mario);
         exit(EXIT_FAILURE);
     }
 
@@ -24,13 +36,17 @@ int main(int argc, char **argv)
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
+        destroy_mario(mario);
+        destroy_objets(objets);
         exit(EXIT_FAILURE);
     }
 
     //Création fenêtre
-    if (SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, &window, &renderer) < 0)
+    if (SDL_CreateWindowAndRenderer(NB_BLOCS_LARGEUR*TAILLE_BLOC, NB_BLOCS_HAUTEUR*TAILLE_BLOC, SDL_WINDOW_SHOWN, &window, &renderer) < 0)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
+        destroy_mario(mario);
+        destroy_objets(objets);
         exit(EXIT_FAILURE);
     }
 
@@ -38,9 +54,20 @@ int main(int argc, char **argv)
     if (load_image_mario(renderer, mario) < 0)
     {
         destroy_mario(mario);
+        destroy_objets(objets);
         clean_resources(window, renderer);
         exit(EXIT_FAILURE);
     }
+
+    //CHARGEMENT DES TEXTURE D'OBJETS
+    if (load_image_objets(renderer, objets) < 0)
+    {
+        destroy_mario(mario);
+        destroy_objets(objets);
+        clean_resources(window, renderer);
+        exit(EXIT_FAILURE);
+    }
+
     mario_actuel = mario->droite;
     SDL_bool isOpen = SDL_TRUE;
     SDL_Event event;
@@ -58,19 +85,19 @@ int main(int argc, char **argv)
             {
             case SDLK_UP:
                 mario_actuel = mario->haut;
-                position.y-= TAILLE_BLOC;
+                position_mario.y-= TAILLE_BLOC;
                 break;
             case SDLK_DOWN:
                 mario_actuel = mario->bas;
-                position.y+= TAILLE_BLOC;
+                position_mario.y+= TAILLE_BLOC;
                 break;
             case SDLK_RIGHT:
                 mario_actuel = mario->droite;
-                position.x+= TAILLE_BLOC;
+                position_mario.x+= TAILLE_BLOC;
                 break;
             case SDLK_LEFT:
                 mario_actuel = mario->gauche;
-                position.x-= TAILLE_BLOC;
+                position_mario.x-= TAILLE_BLOC;
                 break;
             default:
                 break;
@@ -84,7 +111,7 @@ int main(int argc, char **argv)
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
 
-        if (SDL_QueryTexture(mario_actuel, NULL, NULL, &position.w, &position.h) != 0)
+        if (SDL_QueryTexture(mario_actuel, NULL, NULL, &position_mario.w, &position_mario.h) != 0)
         {
             SDL_Log("ERREUR > %s\n", SDL_GetError());
             destroy_mario(mario);
@@ -92,7 +119,7 @@ int main(int argc, char **argv)
             exit(EXIT_FAILURE);
         }
 
-        if (SDL_RenderCopy(renderer, mario_actuel, NULL, &position) != 0)
+        if (SDL_RenderCopy(renderer, mario_actuel, NULL, &position_mario) != 0)
         {
             SDL_Log("ERREUR > %s\n", SDL_GetError());
             destroy_mario(mario);
@@ -104,6 +131,7 @@ int main(int argc, char **argv)
     }
 
     destroy_mario(mario);
+    destroy_objets(objets);
     clean_resources(window, renderer);
 
     return EXIT_SUCCESS;
