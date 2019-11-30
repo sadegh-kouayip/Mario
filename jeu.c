@@ -20,9 +20,12 @@ int main(int argc, char **argv)
 
     //TEST
     map[5][5] = MUR;
-    map[8][3] = CAISSE;
+    map[8][0] = CAISSE;
+    map[8][2] = CAISSE_OK;
     map[3][5] = CAISSE_OK;
+    map[3][6] = CAISSE_OK;
     map[9][7] = OBJECTIF;
+    map[9][8] = CAISSE;
 
     //PACKAGE MARIO
     Mario *mario = new_joueur();

@@ -63,8 +63,22 @@ void deplacer_mario(unsigned int map[][NB_BLOCS_HAUTEUR], SDL_Rect *position, Di
     switch (direction)
     {
         case MARIO_HAUT:
+            //SI NOUS SOMME DEJA A LA LIMITE DU JEU
             if(position->y - 1 < 0)
                 break;
+
+            //S'IL Y A UN MUR 
+            if(map[position->x][position->y - 1] == MUR)
+                break;
+
+            //S'IL Y A UNE CAISSE OK OU UNE SIMPlE CAISSE ET DEVANT IL Y'A UN OBSTACLE
+            if((map[position->x][position->y - 1] == CAISSE || map[position->x][position->y - 1] == CAISSE_OK)
+                     && ((map[position->x][position->y - 2] != VIDE && map[position->x][position->y - 2] != OBJECTIF)  || position->y - 2 < 0))
+                break;
+            
+            //S'IL Y A UNE CAISSE OK OU UNE SIMPlE CAISSE ET DEVANT IL N'Y A PAS UN OBSTACLE
+            if(map[position->x][position->y - 1] == CAISSE || map[position->x][position->y - 1] == CAISSE_OK)
+                deplacer_caisse(&map[position->x][position->y - 1], &map[position->x][position->y - 2]);
 
             position->y--;
             break;
@@ -73,6 +87,19 @@ void deplacer_mario(unsigned int map[][NB_BLOCS_HAUTEUR], SDL_Rect *position, Di
             if(position->y + 1 >= NB_BLOCS_HAUTEUR)
                 break;
 
+            //S'IL Y A UN MUR 
+            if(map[position->x][position->y + 1] == MUR)
+                break;
+
+            //S'IL Y A UNE CAISSE OK OU UNE SIMPlE CAISSE ET DEVANT IL Y'A UN OBSTACLE
+            if((map[position->x][position->y + 1] == CAISSE || map[position->x][position->y + 1] == CAISSE_OK)
+                     && ((map[position->x][position->y + 2] != VIDE && map[position->x][position->y + 2] != OBJECTIF)  || position->y + 2 >= NB_BLOCS_HAUTEUR))
+                break;
+
+            //S'IL Y A UNE CAISSE OK OU UNE SIMPlE CAISSE ET DEVANT IL N'Y A PAS UN OBSTACLE
+            if(map[position->x][position->y + 1] == CAISSE || map[position->x][position->y + 1] == CAISSE_OK)
+                deplacer_caisse(&map[position->x][position->y + 1], &map[position->x][position->y + 2]);
+
             position->y++;
             break;
 
@@ -80,12 +107,38 @@ void deplacer_mario(unsigned int map[][NB_BLOCS_HAUTEUR], SDL_Rect *position, Di
             if(position->x + 1 >= NB_BLOCS_LARGEUR)
                 break;
 
+            //S'IL Y A UN MUR 
+            if(map[position->x + 1][position->y] == MUR)
+                break;
+
+            //S'IL Y A UNE CAISSE OK OU UNE SIMPlE CAISSE ET DEVANT IL Y'A UN OBSTACLE
+            if((map[position->x + 1][position->y] == CAISSE || map[position->x + 1][position->y] == CAISSE_OK)
+                     && ((map[position->x + 2][position->y] != VIDE && map[position->x + 2][position->y] != OBJECTIF)  || position->x + 2 >= NB_BLOCS_HAUTEUR))
+                break;
+
+            //S'IL Y A UNE CAISSE OK OU UNE SIMPlE CAISSE ET DEVANT IL N'Y A PAS UN OBSTACLE
+            if(map[position->x + 1][position->y] == CAISSE || map[position->x + 1][position->y] == CAISSE_OK)
+                deplacer_caisse(&map[position->x + 1][position->y], &map[position->x + 2][position->y]);
+
             position->x++;
             break;
 
         case MARIO_GAUCHE:
             if(position->x - 1 < 0)
                 break;
+
+            //S'IL Y A UN MUR 
+            if(map[position->x - 1][position->y] == MUR)
+                break;
+
+            //S'IL Y A UNE CAISSE OK OU UNE SIMPlE CAISSE ET DEVANT IL Y'A UN OBSTACLE
+            if((map[position->x - 1][position->y] == CAISSE || map[position->x - 1][position->y] == CAISSE_OK)
+                     && ((map[position->x - 2][position->y] != VIDE && map[position->x - 2][position->y] != OBJECTIF)  || position->x - 2 < 0))
+                break;
+
+            //S'IL Y A UNE CAISSE OK OU UNE SIMPlE CAISSE ET DEVANT IL N'Y A PAS UN OBSTACLE
+            if(map[position->x - 1][position->y] == CAISSE || map[position->x - 1][position->y] == CAISSE_OK)
+                deplacer_caisse(&map[position->x - 1][position->y], &map[position->x - 2][position->y]);
 
             position->x--;
             break;
@@ -169,6 +222,19 @@ int load_image_objets(SDL_Renderer *renderer, Objets *objets)
     SDL_FreeSurface(picture);
 
     return error;
+}
+
+void deplacer_caisse(int *position_un, int *position_deux)
+{
+    if(*position_deux == OBJECTIF)
+        *position_deux = CAISSE_OK;
+    else
+        *position_deux = CAISSE;
+    
+    if(*position_un == CAISSE_OK)
+        *position_un = OBJECTIF;
+    else
+        *position_un = VIDE; 
 }
 
 void destroy_objets(Objets *objets)
