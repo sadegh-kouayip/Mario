@@ -6,7 +6,10 @@
 #include <stdlib.h>
 #include <SDL_image.h>
 
+#define NB_BLOCS_LARGEUR 12
+#define NB_BLOCS_HAUTEUR 12
 #define TAILLE_BLOC 34
+
 
 //DECLARATION MARIO
 typedef struct Mario
@@ -64,6 +67,7 @@ Objets *new_Objets();
 //Mario
 int load_image_mario(SDL_Renderer *renderer, Mario *mario);
 void destroy_mario(Mario *mario);
+void deplacer_mario(unsigned int map[][NB_BLOCS_HAUTEUR], SDL_Rect *position, Direction_Mario direction);
 
 //Objets
 int load_image_objets(SDL_Renderer *renderer, Objets *objets);

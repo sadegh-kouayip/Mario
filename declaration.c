@@ -58,6 +58,43 @@ int load_image_mario(SDL_Renderer *renderer, Mario *mario)
     return error;
 }
 
+void deplacer_mario(unsigned int map[][NB_BLOCS_HAUTEUR], SDL_Rect *position, Direction_Mario direction)
+{
+    switch (direction)
+    {
+        case MARIO_HAUT:
+            if(position->y - 1 < 0)
+                break;
+
+            position->y--;
+            break;
+
+        case MARIO_BAS:
+            if(position->y + 1 >= NB_BLOCS_HAUTEUR)
+                break;
+
+            position->y++;
+            break;
+
+        case MARIO_DROITE:
+            if(position->x + 1 >= NB_BLOCS_LARGEUR)
+                break;
+
+            position->x++;
+            break;
+
+        case MARIO_GAUCHE:
+            if(position->x - 1 < 0)
+                break;
+
+            position->x--;
+            break;
+        
+        default:
+            break;
+    }
+}
+
 void destroy_mario(Mario *mario)
 {
     if (mario->haut != NULL)

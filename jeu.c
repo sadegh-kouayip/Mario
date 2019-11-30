@@ -1,5 +1,5 @@
 /*Commande pour compiler sur Windows
->gcc src/main.c -o bin/prog -I include -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+>gcc src/*.c -o bin/prog -I include -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 */
 
 #include "jeu.h"
@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     SDL_Renderer *renderer = NULL;
     SDL_Texture *mario_actuel = NULL;
     SDL_Event event;
-    SDL_Rect position_mario = {0, 0, TAILLE_BLOC, TAILLE_BLOC}, position_objects = {0, 0, TAILLE_BLOC, TAILLE_BLOC};
+    SDL_Rect position = {0,0,TAILLE_BLOC,TAILLE_BLOC}, position_mario = {0,0};
     SDL_bool isOpen = SDL_TRUE;
     int i, j;
 
@@ -61,11 +61,11 @@ int main(int argc, char **argv)
 
     //CHARGEMENT DES TEXTURE D'IMAGE
     if (load_image_mario(renderer, mario) < 0)
-        objetsclean_all_error_resources(mario, objets, window, renderer);
+        clean_all_error_resources(mario, objets, window, renderer);
 
     //CHARGEMENT DES TEXTURE D'OBJETS
     if (load_image_objets(renderer, objets) < 0)
-        objetsclean_all_error_resources(mario, objets, window, renderer);
+        clean_all_error_resources(mario, objets, window, renderer);
 
     mario_actuel = mario->droite;
 
@@ -83,19 +83,19 @@ int main(int argc, char **argv)
                 {
                 case SDLK_UP:
                     mario_actuel = mario->haut;
-                    position_mario.y -= TAILLE_BLOC;
+                    deplacer_mario(map, &position_mario, MARIO_HAUT);
                     break;
                 case SDLK_DOWN:
                     mario_actuel = mario->bas;
-                    position_mario.y += TAILLE_BLOC;
+                    deplacer_mario(map, &position_mario, MARIO_BAS);
                     break;
                 case SDLK_RIGHT:
                     mario_actuel = mario->droite;
-                    position_mario.x += TAILLE_BLOC;
+                    deplacer_mario(map, &position_mario, MARIO_DROITE);
                     break;
                 case SDLK_LEFT:
                     mario_actuel = mario->gauche;
-                    position_mario.x -= TAILLE_BLOC;
+                    deplacer_mario(map, &position_mario, MARIO_GAUCHE);
                     break;
                 default:
                     break;
@@ -113,48 +113,48 @@ int main(int argc, char **argv)
         {
             for (j = 0; j < NB_BLOCS_HAUTEUR; j++)
             {
-                position_objects.x = i * position_objects.w;
-                position_objects.y = j * position_objects.w;
+                position.x = i * TAILLE_BLOC;
+                position.y = j * TAILLE_BLOC;
 
                 switch (map[i][j])
                 {
                     case MUR:
                         //POSITIONNE LE MUR
                         if (SDL_SetRenderTarget(renderer, NULL) != 0)
-                            objetsclean_all_error_resources(mario, objets, window, renderer);
+                            clean_all_error_resources(mario, objets, window, renderer);
 
-                        if (SDL_RenderCopy(renderer, objets->mur, NULL, &position_objects) != 0)
-                            objetsclean_all_error_resources(mario, objets, window, renderer);
+                        if (SDL_RenderCopy(renderer, objets->mur, NULL, &position) != 0)
+                            clean_all_error_resources(mario, objets, window, renderer);
 
                         break;
 
                     case CAISSE:
                         //POSITIONNE LA CAISSE
                         if (SDL_SetRenderTarget(renderer, NULL) != 0)
-                            objetsclean_all_error_resources(mario, objets, window, renderer);
+                            clean_all_error_resources(mario, objets, window, renderer);
 
-                        if (SDL_RenderCopy(renderer, objets->caisse, NULL, &position_objects) != 0)
-                            objetsclean_all_error_resources(mario, objets, window, renderer);
+                        if (SDL_RenderCopy(renderer, objets->caisse, NULL, &position) != 0)
+                            clean_all_error_resources(mario, objets, window, renderer);
 
                         break;
 
                     case CAISSE_OK:
                         //POSITIONNE LA CAISSE
                         if (SDL_SetRenderTarget(renderer, NULL) != 0)
-                            objetsclean_all_error_resources(mario, objets, window, renderer);
+                            clean_all_error_resources(mario, objets, window, renderer);
 
-                        if (SDL_RenderCopy(renderer, objets->caisse_ok, NULL, &position_objects) != 0)
-                            objetsclean_all_error_resources(mario, objets, window, renderer);
+                        if (SDL_RenderCopy(renderer, objets->caisse_ok, NULL, &position) != 0)
+                            clean_all_error_resources(mario, objets, window, renderer);
 
                         break;
 
                     case OBJECTIF:
                         //POSITIONNE LA CAISSE
                         if (SDL_SetRenderTarget(renderer, NULL) != 0)
-                            objetsclean_all_error_resources(mario, objets, window, renderer);
+                            clean_all_error_resources(mario, objets, window, renderer);
 
-                        if (SDL_RenderCopy(renderer, objets->objectif, NULL, &position_objects) != 0)
-                            objetsclean_all_error_resources(mario, objets, window, renderer);
+                        if (SDL_RenderCopy(renderer, objets->objectif, NULL, &position) != 0)
+                            clean_all_error_resources(mario, objets, window, renderer);
 
                         break;
 
@@ -165,11 +165,14 @@ int main(int argc, char **argv)
         }
 
         //PLACE MARIO A lA BONNE POSITION
-        if (SDL_SetRenderTarget(renderer, NULL) != 0)
-            objetsclean_all_error_resources(mario, objets, window, renderer);
+        position.x =  position_mario.x * TAILLE_BLOC;
+        position.y =  position_mario.y * TAILLE_BLOC;
 
-        if (SDL_RenderCopy(renderer, mario_actuel, NULL, &position_mario) != 0)
-            objetsclean_all_error_resources(mario, objets, window, renderer);
+        if (SDL_SetRenderTarget(renderer, NULL) != 0)
+            clean_all_error_resources(mario, objets, window, renderer);
+
+        if (SDL_RenderCopy(renderer, mario_actuel, NULL, &position) != 0)
+            clean_all_error_resources(mario, objets, window, renderer);
 
         // MISE A JOUR Du RENDERER
         SDL_RenderPresent(renderer);
@@ -193,7 +196,7 @@ void clean_resources(SDL_Window *w, SDL_Renderer *r)
     SDL_Quit();
 }
 
-void objetsclean_all_error_resources(Mario *mario, Objets *objets, SDL_Window *window, SDL_Renderer *renderer)
+void clean_all_error_resources(Mario *mario, Objets *objets, SDL_Window *window, SDL_Renderer *renderer)
 {
     SDL_Log("ERREUR > %s\n", SDL_GetError());
     destroy_mario(mario);
