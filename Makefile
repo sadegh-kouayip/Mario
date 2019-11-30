@@ -1,6 +1,6 @@
 
 CC=gcc
-CFLAGS=-W -Wall -pedantic
+CFLAGS=-w -Wall -pedantic
 LDFLAGS=-lSDL2 -lSDL2_image
 EXEC=mario
 SRC= $(wildcard *.c)
