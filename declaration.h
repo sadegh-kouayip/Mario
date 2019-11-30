@@ -1,10 +1,10 @@
 #ifndef __DECLARATION__H__
 #define __DECLARATION__H__
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 #define NB_BLOCS_LARGEUR 12
 #define NB_BLOCS_HAUTEUR 12
@@ -72,6 +72,6 @@ void deplacer_mario(unsigned int map[][NB_BLOCS_HAUTEUR], SDL_Rect *position, Di
 //Objets
 int load_image_objets(SDL_Renderer *renderer, Objets *objets);
 void destroy_objets(Objets *objets);
-void deplacer_caisse(int *position_un, int *position_deux);
+void deplacer_caisse(unsigned int *position_un,unsigned int *position_deux);
 
 #endif

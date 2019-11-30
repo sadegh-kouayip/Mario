@@ -16,7 +16,7 @@ int load_image_mario(SDL_Renderer *renderer, Mario *mario)
     int error = 0;
 
     //MARIO DIRECTION VERS LE HAUT
-    picture = IMG_Load("src/assets/image_pack1/mario_haut.gif");
+    picture = IMG_Load("assets/image_pack1/mario_haut.gif");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -26,7 +26,7 @@ int load_image_mario(SDL_Renderer *renderer, Mario *mario)
     SDL_FreeSurface(picture);
 
     //MARIO DIRECTION VERS LE BAS
-    picture = IMG_Load("src/assets/image_pack1/mario_bas.gif");
+    picture = IMG_Load("assets/image_pack1/mario_bas.gif");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -36,7 +36,7 @@ int load_image_mario(SDL_Renderer *renderer, Mario *mario)
     SDL_FreeSurface(picture);
 
     //MARIO DIRECTION VERS LA DROITE
-    picture = IMG_Load("src/assets/image_pack1/mario_droite.gif");
+    picture = IMG_Load("assets/image_pack1/mario_droite.gif");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -46,7 +46,7 @@ int load_image_mario(SDL_Renderer *renderer, Mario *mario)
     SDL_FreeSurface(picture);
 
     //MARIO DIRECTION VERS LA GAUCHE
-    picture = IMG_Load("src/assets/image_pack1/mario_gauche.gif");
+    picture = IMG_Load("assets/image_pack1/mario_gauche.gif");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -167,7 +167,7 @@ void destroy_mario(Mario *mario)
 }
 
 /*
-    OBJETS
+    OBJETS 
 */
 
 Objets *new_Objets()
@@ -182,7 +182,7 @@ int load_image_objets(SDL_Renderer *renderer, Objets *objets)
     int error = 0;
 
     //OBJET MUR
-    picture = IMG_Load("src/assets/image_pack1/mur.png");
+    picture = IMG_Load("assets/image_pack1/mur.PNG");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -192,7 +192,7 @@ int load_image_objets(SDL_Renderer *renderer, Objets *objets)
     SDL_FreeSurface(picture);
 
     //OBJET CAISSE
-    picture = IMG_Load("src/assets/image_pack1/caisse.png");
+    picture = IMG_Load("assets/image_pack1/caisse.PNG");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -202,7 +202,7 @@ int load_image_objets(SDL_Renderer *renderer, Objets *objets)
     SDL_FreeSurface(picture);
 
     //OBJET CAISSE OK
-    picture = IMG_Load("src/assets/image_pack1/caisse_ok.png");
+    picture = IMG_Load("assets/image_pack1/caisse_ok.PNG");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -212,7 +212,7 @@ int load_image_objets(SDL_Renderer *renderer, Objets *objets)
     SDL_FreeSurface(picture);
 
     //OBJECT OBJECTIF
-    picture = IMG_Load("src/assets/image_pack1/objectif.png");
+    picture = IMG_Load("assets/image_pack1/objectif.PNG");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -224,7 +224,7 @@ int load_image_objets(SDL_Renderer *renderer, Objets *objets)
     return error;
 }
 
-void deplacer_caisse(int *position_un, int *position_deux)
+void deplacer_caisse(unsigned int *position_un,unsigned int *position_deux)
 {
     if(*position_deux == OBJECTIF)
         *position_deux = CAISSE_OK;
