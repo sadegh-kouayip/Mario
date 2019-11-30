@@ -8,7 +8,7 @@
 
 #define TAILLE_BLOC 34
 
-//STRUCTURE MARIO
+//DECLARATION MARIO
 typedef struct Mario
 {
     SDL_Texture *haut;
@@ -18,7 +18,16 @@ typedef struct Mario
 
 } Mario;
 
-//STRUCTURE OBJECTS
+typedef enum Direction
+{
+    MARIO_HAUT,
+    MARIO_BAS,
+    MARIO_DROITE,
+    MARIO_GAUCHE
+
+} Direction_Mario;
+
+//DECLARATION OBJECTS
 typedef struct Objets
 {
     SDL_Texture *mur;
@@ -27,6 +36,16 @@ typedef struct Objets
     SDL_Texture *objectif;
 
 } Objets;
+
+enum
+{
+    VIDE,
+    MUR,
+    CAISSE,
+    CAISSE_OK,
+    OBJECTIF,
+    MARIO
+};
 
 /*
   ****CREATION DU MODEL****
