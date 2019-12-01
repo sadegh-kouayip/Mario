@@ -72,6 +72,6 @@ void deplacer_mario(unsigned int map[][NB_BLOCS_HAUTEUR], SDL_Rect *position, Di
 //Objets
 int load_image_objets(SDL_Renderer *renderer, Objets *objets);
 void destroy_objets(Objets *objets);
-void deplacer_caisse(unsigned int *position_un,unsigned int *position_deux);
+void deplacer_caisse(unsigned int *position_un, unsigned int *position_deux);
 
 #endif

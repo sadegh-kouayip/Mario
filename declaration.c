@@ -167,7 +167,7 @@ void destroy_mario(Mario *mario)
 }
 
 /*
-    OBJETS 
+    OBJETS
 */
 
 Objets *new_Objets()

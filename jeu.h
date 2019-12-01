@@ -3,7 +3,7 @@
 
 #include "declaration.h"
 
-void clean_resources(SDL_Window *w, SDL_Renderer *r);
-void clean_all_error_resources(Mario *mario, Objets *objets, SDL_Window *window, SDL_Renderer *renderer);
+int play_games(SDL_Window *window, SDL_Renderer *renderer);
+void clean_all_error_resources(Mario *mario, Objets *objets);
 
 #endif
