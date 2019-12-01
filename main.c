@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    picture = IMG_Load("src/assets/menu/menu.PNG");
+    picture = IMG_Load("assets/menu/menu.PNG");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
