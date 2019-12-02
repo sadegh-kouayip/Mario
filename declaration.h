@@ -1,15 +1,7 @@
 #ifndef __DECLARATION__H__
 #define __DECLARATION__H__
 
-#include <SDL2/SDL.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <SDL2/SDL_image.h>
-
-#define NB_BLOCS_LARGEUR 12
-#define NB_BLOCS_HAUTEUR 12
-#define TAILLE_BLOC 34
-
+#include "constante.h"
 
 //DECLARATION MARIO
 typedef struct Mario
@@ -39,16 +31,6 @@ typedef struct Objets
     SDL_Texture *objectif;
 
 } Objets;
-
-enum
-{
-    VIDE,
-    MUR,
-    CAISSE,
-    CAISSE_OK,
-    OBJECTIF,
-    MARIO
-};
 
 /*
   ****CREATION DU MODEL****

@@ -3,6 +3,7 @@
 */
 
 #include "jeu.h"
+#include "level.h"
 
 int play_games(SDL_Window *window, SDL_Renderer *renderer)
 {
@@ -10,19 +11,17 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
     SDL_Event event;
     SDL_Rect position = {0, 0, TAILLE_BLOC, TAILLE_BLOC}, position_mario = {0, 0, 0, 0};
     SDL_bool isOpen = SDL_TRUE;
-    int i, j, objectifs_restants;
+    int i, j, objectifs_restants, level = 0;
 
     //CARTE DE REPERE DU JEU
     unsigned int map[NB_BLOCS_LARGEUR][NB_BLOCS_HAUTEUR] = {0};
 
-    //TEST
-    map[5][5] = MUR;
-    map[8][0] = CAISSE;
-    map[8][2] = CAISSE_OK;
-    map[3][5] = CAISSE_OK;
-    map[3][6] = CAISSE_OK;
-    map[9][7] = OBJECTIF;
-    map[9][8] = CAISSE;
+    //CHARGEMENT NIVEAU 1
+    if (niveau_jeux(map, level, &position_mario) != EXIT_SUCCESS)
+    {
+        printf("ERREUR > chargement de niveau\n");
+        return EXIT_FAILURE;
+    }
 
     //PACKAGE MARIO
     Mario *mario = new_joueur();
@@ -44,17 +43,17 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
     //CHARGEMENT DES TEXTURE D'IMAGE
     if (load_image_mario(renderer, mario) < 0)
     {
-        clean_all_error_resources(mario, objets);
+        clean_all_resources(mario, objets);
         return EXIT_FAILURE;
     }
     //CHARGEMENT DES TEXTURE D'OBJETS
     if (load_image_objets(renderer, objets) < 0)
     {
-        clean_all_error_resources(mario, objets);
+        clean_all_resources(mario, objets);
         return EXIT_FAILURE;
     }
 
-    mario_actuel = mario->droite;
+    mario_actuel = mario->haut;
 
     while (isOpen)
     {
@@ -84,7 +83,13 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
                     mario_actuel = mario->gauche;
                     deplacer_mario(map, &position_mario, MARIO_GAUCHE);
                     break;
-                default:
+                case SDLK_SPACE:
+                    if (niveau_jeux(map, level, &position_mario) != EXIT_SUCCESS)
+                    {
+                        printf("ERREUR > chargement de niveau");
+                        clean_all_resources(mario, objets);
+                        return EXIT_FAILURE;
+                    }
                     break;
                 }
                 break;
@@ -110,59 +115,36 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
                 {
                 case MUR:
                     //POSITIONNE LE MUR
-                    if (SDL_SetRenderTarget(renderer, NULL) != 0)
-                    {
-                        clean_all_error_resources(mario, objets);
-                        return EXIT_FAILURE;
-                    }
-
                     if (SDL_RenderCopy(renderer, objets->mur, NULL, &position) != 0)
                     {
-                        clean_all_error_resources(mario, objets);
+                        clean_all_resources(mario, objets);
                         return EXIT_FAILURE;
                     }
                     break;
 
                 case CAISSE:
                     //POSITIONNE LA CAISSE
-                    if (SDL_SetRenderTarget(renderer, NULL) != 0)
-                    {
-                        clean_all_error_resources(mario, objets);
-                        return EXIT_FAILURE;
-                    }
-
                     if (SDL_RenderCopy(renderer, objets->caisse, NULL, &position) != 0)
                     {
-                        clean_all_error_resources(mario, objets);
+                        clean_all_resources(mario, objets);
                         return EXIT_FAILURE;
                     }
                     break;
 
                 case CAISSE_OK:
                     //POSITIONNE LA CAISSE
-                    if (SDL_SetRenderTarget(renderer, NULL) != 0)
-                    {
-                        clean_all_error_resources(mario, objets);
-                        return EXIT_FAILURE;
-                    }
-
                     if (SDL_RenderCopy(renderer, objets->caisse_ok, NULL, &position) != 0)
                     {
-                        clean_all_error_resources(mario, objets);
+                        clean_all_resources(mario, objets);
                         return EXIT_FAILURE;
                     }
                     break;
 
                 case OBJECTIF:
                     //POSITIONNE LA CAISSE
-                    if (SDL_SetRenderTarget(renderer, NULL) != 0)
-                    {
-                        clean_all_error_resources(mario, objets);
-                        return EXIT_FAILURE;
-                    }
                     if (SDL_RenderCopy(renderer, objets->objectif, NULL, &position) != 0)
                     {
-                        clean_all_error_resources(mario, objets);
+                        clean_all_resources(mario, objets);
                         return EXIT_FAILURE;
                     }
                     objectifs_restants++;
@@ -172,36 +154,47 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
             }
         }
 
-        //CHECK S'IL Y A ENCORE UN OBJECTIF SUR LA MAP
-        if (objectifs_restants == 0)
-        {
-            printf("Vous avez gagnez\n");
-            isOpen = SDL_FALSE;
-        }
-
         //PLACE MARIO A lA BONNE POSITION
         position.x = position_mario.x * TAILLE_BLOC;
         position.y = position_mario.y * TAILLE_BLOC;
 
-        if (SDL_SetRenderTarget(renderer, NULL) != 0)
-        {
-            clean_all_error_resources(mario, objets);
-            return EXIT_FAILURE;
-        }
-
         if (SDL_RenderCopy(renderer, mario_actuel, NULL, &position) != 0)
         {
-            clean_all_error_resources(mario, objets);
+            clean_all_resources(mario, objets);
             return EXIT_FAILURE;
         }
 
         // MISE A JOUR Du RENDERER
         SDL_RenderPresent(renderer);
-    }
 
-    //TEST
-    if (objectifs_restants == 0)
-        SDL_Delay(3000);
+        //CHECK S'IL Y A ENCORE UN OBJECTIF SUR LA MAP
+        if (objectifs_restants == 0)
+        {
+            //PASSE AU NIVEAU SUIVANT
+            level++;
+
+            printf("Vous avez gagnez le niveau %d\n", level);
+
+            if (level < MAX_LEVEL)
+            {
+                SDL_Delay(3000);
+
+                //CHARGEMENT NIVEAU SUIVANT
+                if (niveau_jeux(map, level, &position_mario) != EXIT_SUCCESS)
+                {
+                    printf("ERREUR > chargement de niveau\n");
+                    isOpen = SDL_FALSE;
+                }
+            }
+            else if(level == MAX_LEVEL)
+            {
+                printf("FELICITATION VOUS AVEZ DELIVRER TOUS LES NIVEAUX !\n");
+                SDL_Delay(2000);
+                isOpen = SDL_FALSE;
+            }
+            
+        }
+    }
 
     destroy_mario(mario);
     destroy_objets(objets);
@@ -209,7 +202,7 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
     return EXIT_SUCCESS;
 }
 
-void clean_all_error_resources(Mario *mario, Objets *objets)
+void clean_all_resources(Mario *mario, Objets *objets)
 {
     SDL_Log("ERREUR > %s\n", SDL_GetError());
     destroy_mario(mario);

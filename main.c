@@ -1,8 +1,9 @@
 /*
->gcc src/main.c -o bin/prog -I include -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+>gcc main.c -o bin/prog -I include -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 */
 
 #include "jeu.h"
+#include "level.h"
 
 #define WINDOW_WIDTH 408
 #define WINDOW_HEIGHT 408
@@ -14,11 +15,19 @@ int main(int argc, char **argv)
 
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    SDL_Surface *picture = NULL;
+    SDL_Surface *picture = NULL, *icon = NULL;
     SDL_Texture *menu = NULL;
     SDL_Rect dest_rect = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 
     SDL_bool continuer = SDL_TRUE;
+
+    //PREPARATION DES DIFFERENTS NIVEAU
+    if(chargement_niveau() != EXIT_SUCCESS)
+    {
+        printf("Error chargement de niveau");
+        SDL_Delay(3000);
+        exit(EXIT_FAILURE);
+    }
 
     //Lancement SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -43,7 +52,13 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    picture = IMG_Load("src/assets/menu/menu.PNG");
+    //ICON DU JEU
+    icon = IMG_Load("assets/icon/peticone.PNG");
+    SDL_SetWindowIcon(window, icon);
+    SDL_FreeSurface(icon);
+
+    //MENU DE DEMARRAGE
+    picture = IMG_Load("assets/menu/menu.PNG");
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
@@ -76,17 +91,10 @@ int main(int argc, char **argv)
             {
             case SDLK_SPACE:
                 if(play_games(window, renderer) != EXIT_SUCCESS)
-                    printf("ERREUR > vérifier vos repertoires et images\n");
+                    printf("ERREUR > Le jeu a rencontrer une ou plusieurs erreurs\n");
                 break;
             }
             break;
-        }
-
-        if(SDL_SetRenderTarget(renderer, NULL) != 0)
-        {
-            SDL_Log("ERREUR color> %s\n", SDL_GetError());
-            clean_resources(window, renderer, menu);
-            exit(EXIT_FAILURE);
         }
 
         if (SDL_RenderCopy(renderer, menu, NULL, &dest_rect) != 0)

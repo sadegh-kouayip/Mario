@@ -52,8 +52,11 @@ int load_image_mario(SDL_Renderer *renderer, Mario *mario)
         SDL_Log("ERREUR > %s\n", SDL_GetError());
         error--;
     }
-    mario->gauche = SDL_CreateTextureFromSurface(renderer, picture);
-    SDL_FreeSurface(picture);
+    else
+    {
+        mario->gauche = SDL_CreateTextureFromSurface(renderer, picture);
+        SDL_FreeSurface(picture);
+    }
 
     return error;
 }
@@ -218,8 +221,11 @@ int load_image_objets(SDL_Renderer *renderer, Objets *objets)
         SDL_Log("ERREUR > %s\n", SDL_GetError());
         error--;
     }
-    objets->objectif = SDL_CreateTextureFromSurface(renderer, picture);
-    SDL_FreeSurface(picture);
+    else
+    {
+        objets->objectif = SDL_CreateTextureFromSurface(renderer, picture);
+        SDL_FreeSurface(picture);
+    }
 
     return error;
 }
