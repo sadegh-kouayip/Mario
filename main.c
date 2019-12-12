@@ -52,15 +52,15 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
     //ICON DU JEU
     icon = IMG_Load("assets/icon/peticone.PNG");
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
 
     //MENU DE DEMARRAGE
-=======
->>>>>>> a9278d6ea9e80289038bcf3aa739a4bba996f7c9
+//=======
+//>>>>>>> a9278d6ea9e80289038bcf3aa739a4bba996f7c9
     picture = IMG_Load("assets/menu/menu.PNG");
     if (picture == NULL)
     {
