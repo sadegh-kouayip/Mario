@@ -12,6 +12,7 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
     SDL_Rect position = {0, 0, TAILLE_BLOC, TAILLE_BLOC}, position_mario = {0, 0, 0, 0};
     SDL_bool isOpen = SDL_TRUE;
     int i, j, objectifs_restants, level = 0;
+    int EXIT = EXIT_SUCCESS;
 
     //CARTE DE REPERE DU JEU
     unsigned int map[NB_BLOCS_LARGEUR][NB_BLOCS_HAUTEUR] = {0};
@@ -188,6 +189,7 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
             }
             else if(level == MAX_LEVEL)
             {
+                EXIT = EXIT_WINNER; 
                 printf("FELICITATION VOUS AVEZ DELIVRER TOUS LES NIVEAUX !\n");
                 SDL_Delay(2000);
                 isOpen = SDL_FALSE;
@@ -199,7 +201,7 @@ int play_games(SDL_Window *window, SDL_Renderer *renderer)
     destroy_mario(mario);
     destroy_objets(objets);
 
-    return EXIT_SUCCESS;
+    return EXIT;
 }
 
 void clean_all_resources(Mario *mario, Objets *objets)

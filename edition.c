@@ -5,7 +5,7 @@ int edit_game(SDL_Window *window, SDL_Renderer *renderer)
 {
     SDL_Event event;
     SDL_bool isOpen = SDL_TRUE;
-    SDL_Rect position = {0, 0, TAILLE_BLOC, TAILLE_BLOC}, position_mario = {0, 0, 0, 0};
+    SDL_Rect position = {0, 0, TAILLE_BLOC, TAILLE_BLOC}, position_mario = {0, 0, 0, 0}, preview = {0, 0, TAILLE_BLOC, TAILLE_BLOC};
 
     int i, j, level = 0, objet_actuel = MUR, clicGaucheEnCours = 0, clicDroitEnCours = 0;
 
@@ -94,6 +94,8 @@ int edit_game(SDL_Window *window, SDL_Renderer *renderer)
                 {
                     map[event.motion.x / TAILLE_BLOC][event.motion.y / TAILLE_BLOC] = VIDE;
                 }
+                preview.x = event.button.x;
+                preview.y = event.button.y;
                 break;
 
             case SDL_KEYDOWN:
@@ -128,15 +130,17 @@ int edit_game(SDL_Window *window, SDL_Renderer *renderer)
                     }
                     break;
                 case SDLK_s:
-                    if (save_level_fihier() != EXIT_SUCCESS){
+                    if (save_level_fihier() != EXIT_SUCCESS)
+                    {
                         printf("ERREUR > sauvegarde des niveaux");
                     }
                     break;
                 case SDLK_SPACE:
-                    if (save_modification(map, level) != EXIT_SUCCESS){
+                    if (save_modification(map, level) != EXIT_SUCCESS)
+                    {
                         printf("ERREUR > sauvegarde des modification du niveau %d", level);
                     }
-                        break;
+                    break;
                 case SDLK_r:
                     if (niveau_jeux(map, level, &position_mario) != EXIT_SUCCESS)
                     {
@@ -146,19 +150,19 @@ int edit_game(SDL_Window *window, SDL_Renderer *renderer)
                     }
                     map[position_mario.x][position_mario.y] = MARIO;
                     break;
-                case SDLK_KP_1:
+                case SDLK_1:
                     objet_actuel = MUR;
                     break;
-                case SDLK_KP_2:
+                case SDLK_2:
                     objet_actuel = CAISSE;
                     break;
-                case SDLK_KP_3:
+                case SDLK_3:
                     objet_actuel = CAISSE_OK;
                     break;
-                case SDLK_KP_4:
+                case SDLK_4:
                     objet_actuel = OBJECTIF;
                     break;
-                case SDLK_KP_5:
+                case SDLK_5:
                     objet_actuel = MARIO;
                     break;
                 }
@@ -222,6 +226,45 @@ int edit_game(SDL_Window *window, SDL_Renderer *renderer)
                     break;
                 }
             }
+        }
+
+        switch (objet_actuel)
+        {
+        case MUR:
+            if (SDL_RenderCopy(renderer, objets->mur, NULL, &preview) != 0)
+            {
+                clean_package(mario, objets);
+                return EXIT_FAILURE;
+            }
+            break;
+        case CAISSE:
+            if (SDL_RenderCopy(renderer, objets->caisse, NULL, &preview) != 0)
+            {
+                clean_package(mario, objets);
+                return EXIT_FAILURE;
+            }
+            break;
+        case CAISSE_OK:
+            if (SDL_RenderCopy(renderer, objets->caisse_ok, NULL, &preview) != 0)
+            {
+                clean_package(mario, objets);
+                return EXIT_FAILURE;
+            }
+            break;
+        case OBJECTIF:
+            if (SDL_RenderCopy(renderer, objets->objectif, NULL, &preview) != 0)
+            {
+                clean_package(mario, objets);
+                return EXIT_FAILURE;
+            }
+            break;
+        case MARIO:
+            if (SDL_RenderCopy(renderer, mario->haut, NULL, &preview) != 0)
+            {
+                clean_package(mario, objets);
+                return EXIT_FAILURE;
+            }
+            break;
         }
 
         // MISE A JOUR Du RENDERER

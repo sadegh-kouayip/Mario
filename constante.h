@@ -9,6 +9,7 @@
 #define NB_BLOCS_LARGEUR 12
 #define NB_BLOCS_HAUTEUR 12
 #define TAILLE_BLOC 34
+#define EXIT_WINNER 1
 
 #define MAX_LEVEL 10
 

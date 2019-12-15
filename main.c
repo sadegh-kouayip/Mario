@@ -1,4 +1,3 @@
-
 #include "jeu.h"
 #include "level.h"
 #include "edition.h"
@@ -6,7 +5,7 @@
 #define WINDOW_WIDTH 408
 #define WINDOW_HEIGHT 408
 
-void clean_resources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t);
+void clean_resources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t, SDL_Texture *v);
 
 int main(int argc, char **argv)
 {
@@ -14,13 +13,13 @@ int main(int argc, char **argv)
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Surface *picture = NULL, *icon = NULL;
-    SDL_Texture *menu = NULL;
+    SDL_Texture *menu = NULL, *winner;
     SDL_Rect dest_rect = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 
     SDL_bool continuer = SDL_TRUE;
 
     //PREPARATION DES DIFFERENTS NIVEAU
-    if(chargement_niveau() != EXIT_SUCCESS)
+    if (chargement_niveau() != EXIT_SUCCESS)
     {
         printf("Error chargement de niveau");
         SDL_Delay(3000);
@@ -46,12 +45,12 @@ int main(int argc, char **argv)
     if (renderer == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
-        clean_resources(window, NULL, NULL);
+        clean_resources(window, NULL, NULL, NULL);
         exit(EXIT_FAILURE);
     }
 
     //ICON DU JEU
-    icon = IMG_Load("assets/icon/peticone.png");
+    icon = IMG_Load("assets/icon/peticone.PNG");
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
 
@@ -60,7 +59,7 @@ int main(int argc, char **argv)
     if (picture == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
-        clean_resources(window, renderer, NULL);
+        clean_resources(window, renderer, NULL, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -69,7 +68,25 @@ int main(int argc, char **argv)
     if (menu == NULL)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
-        clean_resources(window, renderer, NULL);
+        clean_resources(window, renderer, NULL, NULL);
+        exit(EXIT_FAILURE);
+    }
+
+    //WINNER FELICITATION
+    picture = IMG_Load("assets/menu/fin.PNG");
+    if (picture == NULL)
+    {
+        SDL_Log("ERREUR > %s\n", SDL_GetError());
+        clean_resources(window, renderer, menu, NULL);
+        exit(EXIT_FAILURE);
+    }
+
+    winner = SDL_CreateTextureFromSurface(renderer, picture);
+    SDL_FreeSurface(picture);
+    if (winner == NULL)
+    {
+        SDL_Log("ERREUR > %s\n", SDL_GetError());
+        clean_resources(window, renderer, menu, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -87,12 +104,30 @@ int main(int argc, char **argv)
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym)
             {
-            case SDLK_SPACE:
-                if(play_games(window, renderer) != EXIT_SUCCESS)
+            case SDLK_1:
+                switch (play_games(window, renderer))
+                {
+                case EXIT_WINNER:
+                    printf("Felicitation vous avez delivrer le jeux\n");
+                    if (SDL_RenderCopy(renderer, winner, NULL, &dest_rect) != 0)
+                    {
+                        SDL_Log("ERREUR color> %s\n", SDL_GetError());
+                        clean_resources(window, renderer, menu, winner);
+                        exit(EXIT_FAILURE);
+                    }
+                    SDL_RenderPresent(renderer);
+                    SDL_Delay(6000);
+                    break;
+                case EXIT_SUCCESS:
+                    printf("Vous n'avez pas fini l'aventure continuer ou modifier les niveaux pour plus de dificulter\n");
+                    break;
+                default:
                     printf("ERREUR > Le jeu a rencontrer une ou plusieurs erreurs\n");
+                    break;
+                }
                 break;
-            case SDLK_a:
-                if(edit_game(window, renderer) != EXIT_SUCCESS)
+            case SDLK_2:
+                if (edit_game(window, renderer) != EXIT_SUCCESS)
                     printf("ERREUR > Le jeu a rencontrer une ou plusieurs erreurs\n");
                 break;
             }
@@ -102,20 +137,22 @@ int main(int argc, char **argv)
         if (SDL_RenderCopy(renderer, menu, NULL, &dest_rect) != 0)
         {
             SDL_Log("ERREUR color> %s\n", SDL_GetError());
-            clean_resources(window, renderer, menu);
+            clean_resources(window, renderer, menu, winner);
             exit(EXIT_FAILURE);
         }
 
         SDL_RenderPresent(renderer);
     }
 
-    clean_resources(window, renderer, menu);
+    clean_resources(window, renderer, menu, winner);
 
     return EXIT_SUCCESS;
 }
 
-void clean_resources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
+void clean_resources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t, SDL_Texture *v)
 {
+    if (v != NULL)
+        SDL_DestroyTexture(v);
     if (t != NULL)
         SDL_DestroyTexture(t);
     if (r != NULL)
