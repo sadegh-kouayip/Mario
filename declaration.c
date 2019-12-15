@@ -260,3 +260,10 @@ void destroy_objets(Objets *objets)
     free(objets);
     objets = NULL;
 }
+
+void clean_package(Mario *mario, Objets *objets)
+{
+    SDL_Log("ERREUR > %s\n", SDL_GetError());
+    destroy_mario(mario);
+    destroy_objets(objets);
+}

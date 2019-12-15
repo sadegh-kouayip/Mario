@@ -11,5 +11,7 @@ struct Level
 
 int chargement_niveau();
 int niveau_jeux(unsigned int map[][NB_BLOCS_LARGEUR], int level, SDL_Rect *position_mario);
+int save_level_fihier();
+int save_modification(unsigned map[][NB_BLOCS_LARGEUR], int level);
 
 #endif

@@ -1,9 +1,7 @@
-/*
->gcc main.c -o bin/prog -I include -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
-*/
 
 #include "jeu.h"
 #include "level.h"
+#include "edition.h"
 
 #define WINDOW_WIDTH 408
 #define WINDOW_HEIGHT 408
@@ -52,15 +50,12 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-<<<<<<< HEAD
     //ICON DU JEU
-    icon = IMG_Load("assets/icon/peticone.PNG");
+    icon = IMG_Load("assets/icon/peticone.png");
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
 
     //MENU DE DEMARRAGE
-=======
->>>>>>> a9278d6ea9e80289038bcf3aa739a4bba996f7c9
     picture = IMG_Load("assets/menu/menu.PNG");
     if (picture == NULL)
     {
@@ -94,6 +89,10 @@ int main(int argc, char **argv)
             {
             case SDLK_SPACE:
                 if(play_games(window, renderer) != EXIT_SUCCESS)
+                    printf("ERREUR > Le jeu a rencontrer une ou plusieurs erreurs\n");
+                break;
+            case SDLK_a:
+                if(edit_game(window, renderer) != EXIT_SUCCESS)
                     printf("ERREUR > Le jeu a rencontrer une ou plusieurs erreurs\n");
                 break;
             }

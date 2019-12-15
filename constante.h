@@ -1,9 +1,9 @@
 #ifndef __CONSTANTE__H__
 #define __CONSTANTE__H__
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <stdio.h>
 #include <SDL2/SDL_image.h>
 
 #define NB_BLOCS_LARGEUR 12

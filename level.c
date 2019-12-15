@@ -78,3 +78,68 @@ int niveau_jeux(unsigned int map[][NB_BLOCS_LARGEUR], int level, SDL_Rect *posit
 
     return EXIT_SUCCESS;
 }
+
+int save_modification(unsigned map[][NB_BLOCS_LARGEUR], int level)
+{
+    int x = 0, y = 0, i = 0;
+ 
+    for(x=0; x<NB_BLOCS_HAUTEUR; x++)
+    {
+        for(y=0; y<NB_BLOCS_LARGEUR; y++)
+        {
+            switch(map[x][y])
+            {
+               case VIDE:
+                    Level[level].l[i] = '0';
+                    break;
+ 
+               case MUR:
+                    Level[level].l[i] = '1';
+                    break;
+ 
+               case CAISSE:
+                    Level[level].l[i] = '2';
+                    break;
+ 
+               case CAISSE_OK:
+                    Level[level].l[i] = '3';
+                    break;
+ 
+               case OBJECTIF:
+                    Level[level].l[i] = '4';
+                    break;
+ 
+               case MARIO:
+                    Level[level].l[i] = '5';
+                    break;
+            }
+            i++;
+        }
+    }
+ 
+    return EXIT_SUCCESS;
+ 
+}
+ 
+int save_level_fihier()
+{
+    int i;
+ 
+    FILE *fichier = NULL;
+ 
+    fichier = fopen("level.lvl","w");
+ 
+    if(fichier != NULL)
+    {
+        for(i = 0; i<10; i++)
+        {
+            fprintf(fichier,"%s\n",Level[i].l);
+        }
+ 
+        fclose(fichier);
+ 
+        return EXIT_SUCCESS;
+    }
+    else return EXIT_FAILURE;
+ 
+}
